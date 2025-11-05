@@ -810,6 +810,74 @@ async function getAllActivitiesFromFirestore() {
 }
 
 // ========================================
+// IMPORT ALL ACTIVITIES (Bypass Testing Mode)
+// ========================================
+async function importAllActivities() {
+    try {
+        console.log('🚀 Starting FULL IMPORT of ALL activities (bypassing limits)...');
+        
+        // Get existing activities to avoid duplicates
+        const existingActivities = await getAllActivitiesFromFirestore();
+        const existingIds = new Set(existingActivities.map(a => a.id));
+        console.log(`📊 Found ${existingActivities.length} existing activities in database`);
+        
+        let page = 1;
+        let totalSynced = 0;
+        let totalNew = 0;
+        let hasMore = true;
+
+        while (hasMore) {
+            console.log(`🔍 Fetching page ${page} from Strava...`);
+            const activities = await fetchStravaActivities(200, page); // Max per page is 200
+            
+            if (activities.length === 0) {
+                console.log('📌 No more activities available on Strava');
+                hasMore = false;
+                break;
+            }
+
+            // Filter out activities we already have
+            const newActivities = activities.filter(a => !existingIds.has(a.id));
+            
+            if (newActivities.length > 0) {
+                console.log(`✅ Found ${newActivities.length} new activities on page ${page}`);
+                const synced = await syncActivitiesToFirestore(newActivities);
+                totalSynced += synced;
+                totalNew += newActivities.length;
+                
+                // Add to existing IDs set
+                newActivities.forEach(a => existingIds.add(a.id));
+            } else {
+                console.log(`⏭️ Page ${page}: All ${activities.length} activities already in database`);
+            }
+            
+            // If we got less than 200, we've reached the end of Strava activities
+            if (activities.length < 200) {
+                console.log('📌 Reached end of Strava activities');
+                hasMore = false;
+            } else {
+                page++;
+            }
+        }
+
+        const finalCount = existingActivities.length + totalNew;
+        console.log(`🎉 FULL IMPORT COMPLETE!`);
+        console.log(`   📊 Total activities in database: ${finalCount}`);
+        console.log(`   ✨ New activities imported: ${totalNew}`);
+        console.log(`   📄 Pages fetched: ${page}`);
+        
+        return {
+            total: finalCount,
+            newActivities: totalNew,
+            pagesChecked: page
+        };
+    } catch (error) {
+        console.error('❌ Error importing all activities:', error);
+        throw error;
+    }
+}
+
+// ========================================
 // DISCONNECT STRAVA
 // ========================================
 async function disconnectStrava() {

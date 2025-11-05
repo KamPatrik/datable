@@ -122,7 +122,39 @@ function setupEventListeners() {
                 alert('Failed to sync activities. Please try again.');
             } finally {
                 syncBtn.disabled = false;
-                syncBtn.textContent = '🔄 Sync Activities';
+                syncBtn.textContent = '🔄 Sync Activities (Latest 100)';
+            }
+        });
+    }
+
+    // Full Import ALL Activities
+    const fullSyncBtn = document.getElementById('full-sync-btn');
+    if (fullSyncBtn) {
+        fullSyncBtn.addEventListener('click', async () => {
+            const confirmMessage = 'This will import ALL your Strava activities (not just the latest 100).\n\n' +
+                                 'This may take several minutes depending on how many activities you have.\n\n' +
+                                 'Continue?';
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            fullSyncBtn.disabled = true;
+            fullSyncBtn.textContent = '⚡ Importing...';
+            
+            try {
+                const result = await importAllActivities();
+                alert(`Import complete!\n\n` +
+                      `📊 Total activities: ${result.total}\n` +
+                      `✨ New activities imported: ${result.newActivities}\n` +
+                      `📄 Pages checked: ${result.pagesChecked}`);
+                location.reload();
+            } catch (error) {
+                console.error('Full import error:', error);
+                alert('Failed to import all activities: ' + error.message);
+            } finally {
+                fullSyncBtn.disabled = false;
+                fullSyncBtn.textContent = '⚡ Import ALL Activities';
             }
         });
     }

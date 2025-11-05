@@ -131,12 +131,18 @@
                     </div>
                     <div class="settings-buttons">
                         <button id="sync-activities-btn" class="btn btn-primary">
-                            🔄 Sync Activities
+                            🔄 Sync Activities (Latest 100)
+                        </button>
+                        <button id="full-sync-btn" class="btn btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            ⚡ Import ALL Activities
                         </button>
                         <button id="disconnect-strava-btn" class="btn btn-danger">
                             ❌ Disconnect Strava
                         </button>
                     </div>
+                    <p class="settings-description" style="margin-top: 0.5rem; font-size: 0.85rem; color: #888;">
+                        <strong>Note:</strong> "Sync Activities" fetches your latest 100 activities. Use "Import ALL Activities" for complete history (may take several minutes).
+                    </p>
                 </div>
 
                 <div id="strava-disconnected-section" class="hidden">
