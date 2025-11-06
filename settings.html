@@ -107,12 +107,69 @@
             </div>
         </div>
 
+        <!-- Strava API Credentials -->
+        <div class="analytics-chart-card">
+            <div class="analytics-chart-header">
+                <h2>🔑 Strava API Credentials</h2>
+            </div>
+            <div class="settings-card">
+                <p class="settings-description">
+                    <strong>⚠️ Important:</strong> Strava API allows only one user per application. To use this app, you need to create your own Strava API application (it's free and takes 2 minutes!).
+                </p>
+                
+                <div class="settings-info-card" style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin: 1rem 0;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #856404;">📋 How to Get Your API Credentials:</h4>
+                    <ol style="margin: 0; padding-left: 1.5rem; color: #856404; font-size: 0.9rem; line-height: 1.6;">
+                        <li>Go to <a href="https://www.strava.com/settings/api" target="_blank" style="color: #fc4c02; font-weight: bold;">Strava API Settings</a></li>
+                        <li>Click <strong>"Create an App"</strong> (or use existing one)</li>
+                        <li>Fill in:
+                            <ul style="margin-top: 0.3rem;">
+                                <li><strong>Application Name:</strong> My Datable App (or any name)</li>
+                                <li><strong>Category:</strong> Data Analysis</li>
+                                <li><strong>Website:</strong> https://kampatrik.github.io/datable/</li>
+                                <li><strong>Authorization Callback Domain:</strong> kampatrik.github.io</li>
+                            </ul>
+                        </li>
+                        <li>Click <strong>"Create"</strong></li>
+                        <li>Copy your <strong>Client ID</strong> and <strong>Client Secret</strong></li>
+                        <li>Paste them below and click <strong>"Save Credentials"</strong></li>
+                    </ol>
+                </div>
+
+                <div id="api-credentials-status" class="settings-status hidden" style="margin-bottom: 1rem;">
+                    <span class="status-indicator">✓</span>
+                    <span>API Credentials Saved</span>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="strava-client-id" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Client ID</label>
+                    <input type="text" id="strava-client-id" class="form-input" placeholder="Enter your Strava Client ID" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="strava-client-secret" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Client Secret</label>
+                    <input type="password" id="strava-client-secret" class="form-input" placeholder="Enter your Strava Client Secret" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                    <small style="display: block; margin-top: 0.3rem; color: #888; font-size: 0.85rem;">Your credentials are stored securely in Firebase and synced across all your devices. Only you can access them.</small>
+                </div>
+
+                <button id="save-api-credentials-btn" class="btn btn-primary">
+                    💾 Save API Credentials
+                </button>
+                <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #666;">
+                    ☁️ Credentials are saved to your account - you only need to enter them once!
+                </p>
+            </div>
+        </div>
+
         <!-- Strava Connection -->
         <div class="analytics-chart-card">
             <div class="analytics-chart-header">
                 <h2>🔗 Strava Connection</h2>
             </div>
             <div class="settings-card">
+                <p class="settings-description" style="background: #e7f3ff; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #2196F3;">
+                    <strong>ℹ️ Note:</strong> You must save your API credentials above before connecting to Strava.
+                </p>
                 <div id="strava-connected-section" class="hidden">
                     <div class="settings-status status-connected">
                         <span class="status-indicator">✓</span>

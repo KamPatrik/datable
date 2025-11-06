@@ -1,10 +1,22 @@
-# 🏃 Strava Activity Tracker
+# 🏃 Strava Activity Tracker (Datable)
 
 A web application for tracking, analyzing, and visualizing your Strava activities. Built with vanilla JavaScript, Firebase, and Chart.js.
 
 ![Strava Activity Tracker](https://img.shields.io/badge/Status-Ready-brightgreen) ![Firebase](https://img.shields.io/badge/Firebase-10.7.1-orange) ![Chart.js](https://img.shields.io/badge/Chart.js-4.4.0-blue)
 
-> **📚 [Complete Documentation](docs/INDEX.md)** | **🔧 [Technical Context](PROJECT_CONTEXT.md)** | **🚀 [Quick Start](#-setup-instructions)**
+> **📚 [Complete Documentation](docs/INDEX.md)** | **🔧 [Technical Context](PROJECT_CONTEXT.md)** | **� [Strava API Setup](STRAVA_API_SETUP.md)** | **�🚀 [Quick Start](#-setup-instructions)**
+
+---
+
+## ⚠️ IMPORTANT: Strava API Requirement
+
+**Each user needs their own Strava API credentials!** This is FREE and takes 2 minutes.
+
+👉 **[Follow this simple guide](STRAVA_API_SETUP.md)** to create your Strava API application.
+
+**Why?** Strava allows only ONE user per API application. Instead of sharing credentials (which would limit the app to one user), each person creates their own free API app and enters the credentials in Settings.
+
+---
 
 ## 🌟 Features
 

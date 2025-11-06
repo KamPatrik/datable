@@ -1,8 +1,35 @@
 // ========================================
 // STRAVA API CONFIGURATION
 // ========================================
-const STRAVA_CLIENT_ID = '105945';
-const STRAVA_CLIENT_SECRET = '4a765020553c25ab1f555cc5a35e94ba6b985b09';
+// Get credentials from Firestore (user-provided)
+async function getStravaClientId() {
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            throw new Error('No user logged in');
+        }
+        const userData = await getUserData(user.uid);
+        return userData.stravaClientId || null;
+    } catch (error) {
+        console.error('Error getting client ID:', error);
+        return null;
+    }
+}
+
+async function getStravaClientSecret() {
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            throw new Error('No user logged in');
+        }
+        const userData = await getUserData(user.uid);
+        return userData.stravaClientSecret || null;
+    } catch (error) {
+        console.error('Error getting client secret:', error);
+        return null;
+    }
+}
+
 const STRAVA_REDIRECT_URI = 'https://kampatrik.github.io/datable/strava-callback.html'; // Production URL
 
 const STRAVA_AUTH_URL = 'https://www.strava.com/oauth/authorize';
@@ -32,12 +59,28 @@ const DOWNSAMPLE_FACTOR = 10; // Keep every 10th data point (90% reduction)
 // ========================================
 // CONNECT TO STRAVA (OAuth Flow)
 // ========================================
-function connectStrava() {
-    const scope = 'read,activity:read_all,profile:read_all';
-    const authUrl = `${STRAVA_AUTH_URL}?client_id=${STRAVA_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(STRAVA_REDIRECT_URI)}&approval_prompt=force&scope=${scope}`;
-    
-    // Redirect to Strava authorization page
-    window.location.href = authUrl;
+async function connectStrava() {
+    try {
+        // Check if user has provided API credentials
+        const clientId = await getStravaClientId();
+        const clientSecret = await getStravaClientSecret();
+        
+        if (!clientId || !clientSecret) {
+            alert('⚠️ Please configure your Strava API credentials in Settings first!\n\nGo to Settings → Strava API Credentials and enter your Client ID and Secret.');
+            window.location.href = 'settings.html';
+            return;
+        }
+        
+        const scope = 'read,activity:read_all,profile:read_all';
+        const authUrl = `${STRAVA_AUTH_URL}?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(STRAVA_REDIRECT_URI)}&approval_prompt=force&scope=${scope}`;
+        
+        // Redirect to Strava authorization page
+        window.location.href = authUrl;
+    } catch (error) {
+        console.error('Error connecting to Strava:', error);
+        alert('❌ Error connecting to Strava. Please make sure you have configured your API credentials in Settings.');
+        window.location.href = 'settings.html';
+    }
 }
 
 // ========================================
@@ -45,14 +88,17 @@ function connectStrava() {
 // ========================================
 async function exchangeStravaToken(code) {
     try {
+        const clientId = await getStravaClientId();
+        const clientSecret = await getStravaClientSecret();
+        
         const response = await fetch(STRAVA_TOKEN_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                client_id: STRAVA_CLIENT_ID,
-                client_secret: STRAVA_CLIENT_SECRET,
+                client_id: clientId,
+                client_secret: clientSecret,
                 code: code,
                 grant_type: 'authorization_code'
             })
@@ -105,14 +151,17 @@ async function exchangeStravaToken(code) {
 // ========================================
 async function refreshStravaToken(refreshToken) {
     try {
+        const clientId = await getStravaClientId();
+        const clientSecret = await getStravaClientSecret();
+        
         const response = await fetch(STRAVA_TOKEN_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                client_id: STRAVA_CLIENT_ID,
-                client_secret: STRAVA_CLIENT_SECRET,
+                client_id: clientId,
+                client_secret: clientSecret,
                 refresh_token: refreshToken,
                 grant_type: 'refresh_token'
             })

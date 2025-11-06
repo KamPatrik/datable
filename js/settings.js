@@ -97,9 +97,88 @@ async function updateStravaUI(isConnected) {
 }
 
 // ========================================
+// SAVE API CREDENTIALS
+// ========================================
+async function saveApiCredentials() {
+    const clientId = document.getElementById('strava-client-id').value.trim();
+    const clientSecret = document.getElementById('strava-client-secret').value.trim();
+
+    if (!clientId || !clientSecret) {
+        alert('⚠️ Please enter both Client ID and Client Secret');
+        return;
+    }
+
+    // Validate format (basic check)
+    if (clientId.length < 4 || clientSecret.length < 20) {
+        alert('⚠️ Invalid credentials format. Please check and try again.');
+        return;
+    }
+
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            alert('❌ You must be logged in to save credentials');
+            return;
+        }
+
+        // Save to Firestore (user's document)
+        await db.collection('users').doc(user.uid).set({
+            stravaClientId: clientId,
+            stravaClientSecret: clientSecret,
+            credentialsUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+
+        // Show success status
+        const statusDiv = document.getElementById('api-credentials-status');
+        statusDiv.classList.remove('hidden');
+        statusDiv.classList.add('status-connected');
+
+        alert('✅ API Credentials saved successfully to your account!\n\nYou can now connect to Strava from any device.');
+    } catch (error) {
+        console.error('Error saving credentials:', error);
+        alert('❌ Failed to save credentials: ' + error.message);
+    }
+}
+
+// ========================================
+// LOAD API CREDENTIALS
+// ========================================
+async function loadApiCredentials() {
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            return;
+        }
+
+        const userData = await getUserData(user.uid);
+        
+        if (userData && userData.stravaClientId && userData.stravaClientSecret) {
+            document.getElementById('strava-client-id').value = userData.stravaClientId;
+            document.getElementById('strava-client-secret').value = userData.stravaClientSecret;
+            
+            // Show success status
+            const statusDiv = document.getElementById('api-credentials-status');
+            statusDiv.classList.remove('hidden');
+            statusDiv.classList.add('status-connected');
+        }
+    } catch (error) {
+        console.error('Error loading credentials:', error);
+    }
+}
+
+// ========================================
 // SETUP EVENT LISTENERS
 // ========================================
 function setupEventListeners() {
+    // Save API Credentials
+    const saveApiBtn = document.getElementById('save-api-credentials-btn');
+    if (saveApiBtn) {
+        saveApiBtn.addEventListener('click', saveApiCredentials);
+    }
+
+    // Load existing credentials on page load
+    loadApiCredentials();
+
     // Connect to Strava
     const connectBtn = document.getElementById('connect-strava-btn');
     if (connectBtn) {
