@@ -3,7 +3,7 @@
 // ========================================
 const STRAVA_CLIENT_ID = '105945';
 const STRAVA_CLIENT_SECRET = '4a765020553c25ab1f555cc5a35e94ba6b985b09';
-const STRAVA_REDIRECT_URI = 'http://localhost:3000/strava-callback.html'; // Change to your hosted URL when deploying
+const STRAVA_REDIRECT_URI = 'https://kampatrik.github.io/datable/strava-callback.html'; // Production URL
 
 const STRAVA_AUTH_URL = 'https://www.strava.com/oauth/authorize';
 const STRAVA_TOKEN_URL = 'https://www.strava.com/oauth/token';
